@@ -1,4 +1,4 @@
-"# sp-sportswear" 
+#bluelock_store# 
 
 Dalam pembuatan project ini, saya memulai dari membuat project Django terlebih dahulu. Hal ini sudah pernah diterapakan sebelumnya saat melakukan tutorial, diawali dengan melakukan instalasi git dan membuat direktori baru yang nantinya akan kita gunakan untuk menambahkan project kita ke dalam github. Setelah menambahkan project tersebut ke dalam direktori yang sudah kita hubungkan dengan github menggunakan git remote add (link git), saya melakukan commit dan push agar project tersebut dapat ditambahkan ke Github. Setelah berhasil dihubungkan, saya lanjut melakukan instalasi django, dengan membuat requirements seperti yang disarankan pada tutorial 0, isi requirements tersebut berisi hal-hal yang diperlukan untuk melakukan instalasi django. Untuk instalasinya sendiri tidak terlalu rumit dan hanya memerlukan waktu sementara. Setelah itu, jalankan django-admin startproject (namaFilenya) . untuk membuat project django.
 
