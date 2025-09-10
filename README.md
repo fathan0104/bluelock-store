@@ -3,7 +3,7 @@ Fathan Alfahrezi
 PBP E
 
 web : https://fathan-alfahrezi-blueelockstore.pbp.cs.ui.ac.id/
-repo : 
+repo : https://github.com/fathan0104/bluelock-store.git
 
 
 1. Dalam membangun proyek ini, langkah awal yang saya lakukan adalah membuat project Django baru. Tahapan ini sebenarnya sudah pernah saya coba sebelumnya ketika mengikuti tutorial, dimulai dengan instalasi git lalu membuat direktori khusus yang nantinya dipakai sebagai tempat project. Direktori tersebut kemudian dihubungkan dengan GitHub melalui perintah git remote add (link). Setelah itu saya melakukan proses commit dan push agar project dapat tersimpan di GitHub.
