@@ -2,6 +2,10 @@ Fathan Alfahrezi
 2406496284
 PBP E
 
+web : https://fathan-alfahrezi-blueelockstore.pbp.cs.ui.ac.id/
+repo : 
+
+
 1. Dalam membangun proyek ini, langkah awal yang saya lakukan adalah membuat project Django baru. Tahapan ini sebenarnya sudah pernah saya coba sebelumnya ketika mengikuti tutorial, dimulai dengan instalasi git lalu membuat direktori khusus yang nantinya dipakai sebagai tempat project. Direktori tersebut kemudian dihubungkan dengan GitHub melalui perintah git remote add (link). Setelah itu saya melakukan proses commit dan push agar project dapat tersimpan di GitHub.
 
 Setelah repository siap, saya melanjutkan dengan instalasi Django dan membuat berkas requirements.txt sebagaimana disarankan pada tutorial 0. Berkas tersebut berisi daftar package yang dibutuhkan untuk menjalankan Django. Proses instalasinya cukup sederhana dan tidak memakan banyak waktu. Selanjutnya saya membuat project menggunakan perintah django-admin startproject (namaProject) ..
