@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-wq@f%6+j!zzpwn#yp&-m$e!f8&%@@9k(t3i24adwg+szi0q(eq
 PRODUCTION = os.getenv('PRODUCTION', 'False').lower() == 'true'
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "https://fathan-alfahrezi-bluelockstore.pbp.cs.ui.ac.id"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "fathan-alfahrezi-bluelockstore.pbp.cs.ui.ac.id"]
 CSRF_TRUSTED_ORIGINS = [
     "https://fathan-alfahrezi-blueelockstore.pbp.cs.ui.ac.id/"
 ]
