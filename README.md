@@ -1,6 +1,7 @@
 Fathan Alfahrezi
 2406496284
 PBP E
+Tugas 2
 
 web : https://fathan-alfahrezi-blueelockstore.pbp.cs.ui.ac.id/
 repo : https://github.com/fathan0104/bluelock-store.git
@@ -88,4 +89,37 @@ Selain itu, Django menggunakan pola arsitektur MTV (Model-Template-View) yang se
 Tutorial cukup jelas dan mudah dipahami
 
 
-	
+Tugas 3
+1. Mengapa Kita Memerlukan Data Delivery dalam Implementasi Sebuah Platform? 
+Data delivery (pengiriman data) sangat penting dalam implementasi platform karena memastikan bahwa data yang tepat sampai ke pengguna atau sistem yang tepat, pada waktu yang tepat, dan dalam format yang benar. Tanpa proses ini, data tidak akan bisa digunakan secara efektif, bahkan jika data tersebut sudah dikumpulkan dan diproses dengan baik.
+
+2. Mana yang Lebih Baik antara XML dan JSON? Mengapa JSON Lebih Populer?
+Secara umum, JSON (JavaScript Object Notation) dianggap lebih baik dan lebih populer daripada XML (Extensible Markup Language) untuk sebagian besar aplikasi web modern.
+alasan utama json lebih populer adalah
+    - Sintaks lebih ringkas
+    - Ukuran file lebih kecil
+    - Mudah diuraikan
+    - Kompatibilitas dengan web API
+
+3. Fungsi dari Method is_valid() pada Form Django dan Mengapa Kita Membutuhkannya?
+Method is_valid() pada Django Forms berfungsi untuk memvalidasi data yang dikirimkan melalui form. Ketika Anda memanggil form.is_valid(), Django akan melakukan beberapa hal:
+    -Validasi Otomatis: Memeriksa apakah setiap field pada form (misalnya, teks, email, tanggal) telah diisi dengan format yang benar.
+    -Validasi Khusus: Menjalankan metode validasi khusus yang mungkin Anda definisikan pada form (misalnya, memeriksa apakah password dan konfirmasi password cocok).
+    -Mengisi cleaned_data: Jika validasi berhasil, Django akan menyimpan data yang sudah divalidasi dan dibersihkan dalam atribut form.cleaned_data. Atribut ini aman untuk digunakan karena sudah melewati semua pemeriksaan. 
+
+4. Mengapa Kita Membutuhkan csrf_token saat Membuat Form di Django? Apa yang Terjadi jika Tidak Ditambahkan? Bagaimana Hal Tersebut Dapat Dimanfaatkan oleh Penyerang?
+Kita membutuhkan csrf_token untuk melindungi aplikasi dari serangan CSRF (Cross-Site Request Forgery).
+Apa yang terjadi jika tidak ada?: Jika csrf_token tidak ditambahkan, form Anda akan rentan terhadap serangan CSRF. Ini berarti penyerang dapat membuat halaman web palsu dan "memaksa" 
+pengguna yang sedang login di situs Anda untuk melakukan tindakan yang tidak mereka sadari (misalnya, mengubah password, mentransfer uang, atau menghapus data).
+Bagaimana dimanfaatkan oleh penyerang?: Penyerang akan membuat halaman web yang berisi form tersembunyi. Ketika korban (yang sudah login di situs Anda) mengunjungi halaman web palsu tersebut, 
+kode JavaScript atau form tersembunyi akan otomatis mengirimkan permintaan ke situs Anda. Karena browser korban menyertakan cookie sesi yang valid, server Anda akan menganggap permintaan itu sah dan menjalankan tindakan tersebut tanpa sepengetahuan korban. csrf_token mencegah hal ini karena server akan menolak permintaan yang tidak memiliki token yang sesuai.
+
+5. Bagaimana Cara Mengimplementasikan Checklist di Atas secara Step-by-step?
+    - Menambahkan 4 Fungsi views Baru seperti get_xml,get_json,get_xml_by_id,get_json_by_id
+    - Setelah menambahkan views lalu memetakannya ke url pada urls.py
+    - Menambah isi main.html yang akan menampilkan daftar objek. Di dalam template ini, tambahkan tombol "Add" dan "Detail" untuk setiap objek.
+    - Membuat halaman forms.py untuk menambahkan objek model dan tambahkan csrf token di dalamnya
+    - Membuat halaman yang menampilkan detail setiap objek
+
+6. Apakah Ada Feedback untuk Asdos di Tutorial 2 yang Sudah Kalian Kerjakan?
+Untuk tutorial 2 ini sudah cukup jelas dibuat oleh asdosnya

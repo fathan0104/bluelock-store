@@ -1,14 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Bluelock Store</title>
-</head>
-<body>
-    <h1>Bluelock Store ⚽</h1>
-    <p>Selamat datang di toko bola sederhana!</p>
-    <p>Fathan Alfahrezi</p>
-    <p>2046496284</p>
-    <p>PBP E</p>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block meta %}
+<title>Bluelock Store</title>
+{% endblock meta %}
+
+{% block content %}
+<h1>Bluelock Store ⚽</h1>
+<p>Selamat datang di toko bola sederhana!</p>
+
+<h2>Daftar Objek</h2>
+
+<a href="{% url 'main:create_product' %}">
+    <button>Tambah Objek Baru</button>
+</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nama Objek</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for object in objects %}
+        <tr>
+            <td>{{ object.id }}</td>
+            <td>{{ object.name }}</td>
+            <td>
+                <a href="{% url 'main:show_main' object.id %}">
+                    <button>Detail</button>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<hr>
+<p>Fathan Alfahrezi</p>
+<p>2046496284</p>
+<p>PBP E</p>
+{% endblock content %}
