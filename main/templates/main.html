@@ -23,15 +23,19 @@
         </tr>
     </thead>
     <tbody>
-        {% for object in objects %}
+        {% for product in products %}
         <tr>
-            <td>{{ object.id }}</td>
-            <td>{{ object.name }}</td>
+            <td>{{ product.id }}</td>
+            <td>{{ product.name }}</td>
             <td>
-                <a href="{% url 'main:show_main' object.id %}">
+                <a href="{% url 'main:show_product' product.id %}">
                     <button>Detail</button>
                 </a>
             </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">Belum ada produk</td>
         </tr>
         {% endfor %}
     </tbody>

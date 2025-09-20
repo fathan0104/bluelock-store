@@ -5,7 +5,11 @@ from main.models import Product
 from main.forms import ProductForm
 
 def show_main(request):
-    return render(request, "main.html")
+    products = Product.objects.all()
+    context = {
+        'products': products,
+    }
+    return render(request, "main.html", context)
 
 # CREATE (create_news → create_product)
 def create_product(request):
