@@ -11,7 +11,11 @@ def show_main(request):
     }
     return render(request, "main.html", context)
 
-# CREATE (create_news → create_product)
+def add_employee(request):
+    add_employee = Employee.objects.create(name = "john",age = 23, persona = "Kerja keras")
+    return HttpRessponse("Employee ditambahkan")
+
+# CREATE (create_news → create_product) 
 def create_product(request):
     form = ProductForm(request.POST or None)
 

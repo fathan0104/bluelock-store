@@ -9,5 +9,11 @@ class Product(models.Model):
     stock = models.PositiveIntegerField(default=0, blank=True, null=True)
     rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.0, blank=True, null=True)
 
+
+class Employee(models.Model):
+    name = models.CharField(max_length=255)
+    age = models.IntegerField()
+    persona = models.TextField()
+    
     def __str__(self):
         return self.name if self.name else "Unnamed Product"
