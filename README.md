@@ -123,3 +123,34 @@ kode JavaScript atau form tersembunyi akan otomatis mengirimkan permintaan ke si
 
 6. Apakah Ada Feedback untuk Asdos di Tutorial 2 yang Sudah Kalian Kerjakan?
 Untuk tutorial 2 ini sudah cukup jelas dibuat oleh asdosnya
+
+TUGAS 4
+1. Apa Perbedaan antara HttpResponseRedirect() dan redirect()?
+Perbedaan utamanya terletak pada level abstraksi dan kemudahannya. HttpResponseRedirect() adalah kelas dari django.http yang secara eksplisit membuat objek response HTTP dengan status kode 302 (atau 301), yang memberitahu browser untuk memuat URL baru. Sementara itu, redirect() adalah fungsi shortcut dari django.shortcuts yang lebih direkomendasikan dan fleksibel; ia dapat menerima nama view, URL absolut, atau bahkan objek model, dan secara otomatis menghasilkan HttpResponseRedirect() yang benar di belakang layar.
+
+2. Jelaskan Cara Kerja Penghubungan Model Product dengan User!
+Penghubungan ini diimplementasikan melalui mekanisme Foreign Key (models.ForeignKey). Ketika user = models.ForeignKey(User, on_delete=models.CASCADE) didefinisikan di model Product, Django membuat kolom user_id di tabel database main_product. Kolom user_id ini menyimpan Primary Key (id) dari tabel auth_user. Dengan kata lain, setiap baris di tabel main_product memiliki pointer yang menunjuk secara langsung ke pemiliknya di tabel auth_user. Atribut on_delete=models.CASCADE memastikan integritas data, di mana jika seorang pengguna dihapus, semua produk yang terasosiasi dengannya juga akan terhapus.
+
+3. Apa Perbedaan antara Authentication dan Authorization, dan Apa yang Dilakukan saat Pengguna Login?
+Authentication (Otentikasi) menjawab pertanyaan "Siapa Anda?" Ini adalah proses verifikasi identitas (misalnya, mencocokkan username dan password).
+Authorization (Otorisasi) menjawab pertanyaan "Apa yang boleh Anda lakukan?" Ini adalah proses penentuan hak akses atau izin bagi pengguna yang sudah terotentikasi.
+Saat pengguna login, yang terjadi adalah proses Authentication. Sistem memanggil authenticate() untuk memverifikasi kredensial dan kemudian menggunakan login() untuk membangun sesi pengguna, secara efektif membuktikan identitas pengguna tersebut.
+
+Bagaimana Django Mengimplementasikan Kedua Konsep Tersebut?
+Authentication: Django mengimplementasikannya melalui modul django.contrib.auth. Setelah pengguna diverifikasi oleh authenticate(), fungsi login() membuat Sesi (Session) yang disimpan di backend (database atau cache). Objek pengguna yang logged in kemudian dapat diakses di request berikutnya melalui request.user.
+Authorization: Django menyediakan sistem Permissions (izin) yang dapat dikaitkan dengan user dan group (misalnya, can_add_product). Dalam kasus aplikasi sederhana seperti ini, otorisasi diimplementasikan secara implisit melalui filtering data (Product.objects.filter(user=request.user)), di mana view secara hardcoded hanya mengizinkan pengguna untuk mengambil data yang mereka miliki.
+
+4. Bagaimana Django Mengingat Pengguna yang Telah Login? Jelaskan Kegunaan Lain dari Cookies dan Apakah Semua Cookies Aman Digunakan?
+Django mengingat pengguna melalui kombinasi Session dan Cookies. Setelah login berhasil, Django membuat entri Session di backend (tabel django_session) yang berisi detail otentikasi pengguna. Kemudian, Django mengirimkan Cookie khusus bernama sessionid ke browser pengguna. Cookie ini hanya berisi ID unik yang merujuk pada session di backend. Pada setiap request berikutnya, browser mengirimkan sessionid kembali ke server, yang kemudian digunakan oleh Django untuk mencari sesi yang sesuai dan mengidentifikasi request.user.
+Kegunaan Lain Cookies: Cookies memiliki kegunaan luas, seperti menyimpan preferensi user (bahasa, tema), melacak item di keranjang belanja, dan digunakan oleh layanan pihak ketiga untuk pelacakan perilaku (iklan bertarget).
+Keamanan Cookies: Tidak, tidak semua cookies aman. Cookies yang ditandai dengan flag keamanan seperti HttpOnly (mencegah akses melalui JavaScript, melindungi dari XSS) dan Secure (hanya dikirim melalui koneksi HTTPS) dianggap lebih aman. Namun, cookies pihak ketiga (third-party cookies) yang digunakan untuk pelacakan sering kali menimbulkan masalah privasi dan dianggap berisiko.
+
+5. Jelaskan Bagaimana Cara Kamu Mengimplementasikan Checklist di Atas secara Step-by-Step
+Definisi Relasi: Menambahkan user = models.ForeignKey(User, ...) di model Product pada models.py.
+Migrasi Awal Gagal (IntegrityError): Menjalankan makemigrations dan gagal karena data lama tidak memiliki user_id. Saya memilih opsi one-off default tetapi ID yang saya masukkan tidak ada di database.
+Perbaikan Database: Saya keluar dari shell, menjalankan python manage.py createsuperuser untuk memastikan ada user dengan ID 1 yang valid di database.
+Migrasi Ulang Sukses: Saya menghapus file migrasi yang gagal, menjalankan ulang makemigrations, dan memasukkan ID 1 sebagai default. Kemudian menjalankan python manage.py migrate untuk menerapkan user_id di tabel main_product.
+Perbaikan views.py (NameError & UnboundLocalError): Saya mengimpor model Product (from .models import Product) di views.py dan memperbaiki logika query dari product = product... menjadi products = Product.objects.filter(user=request.user) untuk menghilangkan error binding dan memastikan filtering data.
+Implementasi Fitur: Saya menambahkan fungsi register, login, dan logout dan menggunakan decorator @login_required pada show_main.
+Cookies: Saya menambahkan logic untuk mengatur dan mengambil cookie last_login di fungsi login dan show_main menggunakan response.set_cookie() dan request.COOKIES.get().
+Pembuatan Data Lokal: Melalui antarmuka admin atau shell, saya membuat dua akun pengguna dan mengaitkan masing-masing tiga dummy data produk, memvalidasi bahwa filtering data di halaman utama berjalan dengan benar.
