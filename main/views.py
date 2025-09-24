@@ -12,15 +12,16 @@ import datetime
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from .models import Product
 
 @login_required(login_url='/login')
 def show_main(request):
-    product = product.objects.filter(user=request.user)
+    products = Product.objects.filter(user=request.user)
     context = {
         'npm': '2406496284',
         'name': request.user.username,
         'class' : 'PBP E',
-        'product_list': product,
+        'product_list': products,
         'last_login': request.COOKIES['last_login'],
     }
     return render(request, "main.html", context)
