@@ -186,4 +186,35 @@ Secure: Django menyediakan setting SESSION_COOKIE_SECURE = True yang harus diakt
     Buka urls.py yang ada pada subdirektori main dan import fungsi
     Tambahkan path url ke dalam urlpatterns untuk mengakses fungsi yang sudah di-import sebelumnya.
     c) Membuat Dua Akun Pengguna & Tiga Dummy Data
+
+TUGAS 5
+1. Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
+Urutan prioritas CSS selector ditentukan oleh specificity (tingkat kekhususan). Urutannya adalah:
+- Inline style (style="...") memiliki prioritas paling tinggi.
+- Selector ID (#id) lebih kuat daripada class atau element.
+- Selector class, pseudo-class, dan attribute (.class, :hover, [type="text"]).
+- Selector elemen dan pseudo-elemen (div, p, ::before).
+  Jika dua selector memiliki tingkat specificity yang sama, maka aturan CSS yang ditulis terakhir akan digunakan (the last rule wins).
+
+2. Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design, serta jelaskan mengapa!
+Responsive design penting karena memastikan tampilan aplikasi web tetap nyaman di berbagai ukuran layar, mulai dari smartphone, tablet, hingga desktop. Tanpa responsive design, pengguna di perangkat kecil harus melakukan zoom in/out atau scroll horizontal, yang menurunkan user experience.
+Contoh aplikasi yang sudah menerapkan: Tokopedia, Shopee, Gojek → tetap rapi dan mudah digunakan di HP maupun laptop.
+Contoh aplikasi yang belum menerapkan: beberapa website pemerintah lama atau UKM → tampilan di HP berantakan, teks terlalu kecil, harus scroll ke samping.
+Dengan responsive design, website lebih mudah diakses, meningkatkan kepuasan pengguna, dan memperluas jangkauan audiens.
+
+3. Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
+Margin adalah jarak di luar elemen, yaitu ruang antara elemen tersebut dengan elemen lain.
+Border adalah garis tepi yang mengelilingi elemen.
+Padding adalah jarak antara konten elemen dengan border.
+
+4. Jelaskan konsep flexbox dan grid layout beserta kegunaannya!
+Flexbox digunakan untuk mengatur layout satu dimensi (horizontal atau vertikal). Biasanya dipakai untuk navbar, sidebar, atau menata elemen dalam satu baris/kolom.
+Grid digunakan untuk mengatur layout dua dimensi (baris dan kolom sekaligus). Biasanya dipakai untuk galeri foto, dashboard, atau tampilan yang berbentuk tabel.
+
+5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
+   - Menambahkan tailwind di base.html
+   - Membuat fungsi baru di views untuk delete dan edit pordut,sert memetakan urlnya
+   - Kustomisasi halam login,register,tambah product,edit produt dan detail produc menggunakan css
+   - Membuat card product
+   - Membuat navbar
     
