@@ -6,23 +6,27 @@ from main.forms import ProductForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import authenticate, login
-from django.contrib.auth import logout
+from django.contrib.auth import authenticate, login, logout
 import datetime
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import Product
+from django.shortcuts import render, redirect, get_object_or_404
+from main.forms import ProductForm
+from main.models import Product
 
 @login_required(login_url='/login')
 def show_main(request):
     products = Product.objects.filter(user=request.user)
+    last_login_time = request.COOKIES.get('last_login', None) 
+    
     context = {
         'npm': '2406496284',
         'name': request.user.username,
         'class' : 'PBP E',
         'product_list': products,
-        'last_login': request.COOKIES['last_login'],
+        'last_login': last_login_time, # Menggunakan variabel yang sudah di-check
     }
     return render(request, "main.html", context)
 
@@ -39,14 +43,13 @@ def create_product(request):
         product.user = request.user
         product.save()
         return redirect('main:show_main')
-
     context = {'form': form}
     return render(request, "create_product.html", context)
 
 # DETAIL (news_detail → product_detail)
 def show_product(request, id):
     product = get_object_or_404(Product, pk=id)
-
+    product.increment_views()
     context = {
         'product': product
     }
@@ -79,7 +82,6 @@ def show_json_by_id(request, product_id):
 
 def register(request):
     form = UserCreationForm()
-
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -108,3 +110,21 @@ def logout_user(request):
     response = HttpResponseRedirect(reverse('main:login'))
     response.delete_cookie('last_login')
     return response
+
+def edit_product(request, id):
+    news = get_object_or_404(Product, pk=id)
+    form = ProductForm(request.POST or None, instance=news)
+    if form.is_valid() and request.method == 'POST':
+        form.save()
+        return redirect('main:show_main')
+
+    context = {
+        'form': form
+    }
+
+    return render(request, "edit_news.html", context)
+
+def delete_product(request, id):
+    news = get_object_or_404(Product, pk=id)
+    news.delete()
+    return HttpResponseRedirect(reverse('main:show_main'))

@@ -11,12 +11,18 @@ class Product(models.Model):
     is_featured = models.BooleanField(default=False)  
     stock = models.PositiveIntegerField(default=0, blank=True, null=True)
     rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.0, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    product_views = models.PositiveIntegerField(default=0)
 
+    def increment_views(self):
+        self.product_views += 1
+        self.save()
 
-class Employee(models.Model):
-    name = models.CharField(max_length=255)
-    age = models.IntegerField()
-    persona = models.TextField()
-    
+    def is_product_hot(self):
+        return self.product_views > 20
+
     def __str__(self):
         return self.name if self.name else "Unnamed Product"
+
+    
+    
