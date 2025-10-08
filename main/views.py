@@ -15,12 +15,15 @@ from .models import Product
 from django.shortcuts import render, redirect, get_object_or_404
 from main.forms import ProductForm
 from main.models import Product
+from django.http import HttpResponseRedirect, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.utils.html import strip_tags
 
 @login_required(login_url='/login')
 def show_main(request):
     products = Product.objects.filter(user=request.user)
     last_login_time = request.COOKIES.get('last_login', None) 
-    
     context = {
         'npm': '2406496284',
         'name': request.user.username,
@@ -34,19 +37,27 @@ def add_employee(request):
     add_employee = Employee.objects.create(name = "john",age = 23, persona = "Kerja keras")
     return HttpRessponse("Employee ditambahkan")
 
-# CREATE (create_news → create_product) 
+# CREATE (create_product → create_product) 
+@login_required(login_url='/login')
 def create_product(request):
-    form = ProductForm(request.POST or None)
+    if request.method == "POST":
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.user = request.user
+            product.save()
+            messages.success(request, "Product successfully added!")
+            return redirect('main:show_main')
+        else:
+            messages.error(request, "Please fix the errors below.")
+    else:
+        form = ProductForm()
 
-    if form.is_valid() and request.method == "POST":
-        product = form.save(commit=False)
-        product.user = request.user
-        product.save()
-        return redirect('main:show_main')
     context = {'form': form}
     return render(request, "create_product.html", context)
 
-# DETAIL (news_detail → product_detail)
+
+# DETAIL (product_detail → product_detail)
 def show_product(request, id):
     product = get_object_or_404(Product, pk=id)
     product.increment_views()
@@ -63,8 +74,21 @@ def show_xml(request):
 
 def show_json(request):
     product_list = Product.objects.all()
-    json_data = serializers.serialize("json", product_list)
-    return HttpResponse(json_data, content_type="application/json")
+    data = [
+        {
+            'name': product.name,
+            'description': product.description,
+            'category': product.category,
+            'thumbnail': product.thumbnail,
+            'product_views': product.product_views,
+            'created_at': product.created_at.isoformat() if product.product_at else None,
+            'is_featured': product.is_featured,
+            'user_id': product.user_id,
+        }
+        for product in product_list
+    ]
+
+    return JsonResponse(data, safe=False)
 
 def show_xml_by_id(request, product_id):
     product_item = Product.objects.filter(pk=product_id)
@@ -74,21 +98,35 @@ def show_xml_by_id(request, product_id):
     return HttpResponse(status=404)
 
 def show_json_by_id(request, product_id):
-    product_item = Product.objects.filter(pk=product_id)
-    if product_item.exists():
-        json_data = serializers.serialize("json", product_item)
-        return HttpResponse(json_data, content_type="application/json")
-    return HttpResponse(status=404)
+    try:
+        product = Product.objects.select_related('user').get(pk=product_id)
+        data = {
+            'name': product.name,
+            'description': product.description,
+            'category': product.category,
+            'thumbnail': product.thumbnail,
+            'product_views': product.product_views,
+            'created_at': product.created_at.isoformat() if product.product_at else None,
+            'is_featured': product.is_featured,
+            'user_id': product.user_id,
+            'user_username': product.user.username if product.user_id else None,
+        }
+        return JsonResponse(data)
+    except Product.DoesNotExist:
+        return JsonResponse({'detail': 'Not found'}, status=404)
 
 def register(request):
-    form = UserCreationForm()
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Your account has been successfully created!')
-            return redirect('main:login')
-    context = {'form':form}
+            return redirect('main:login') # Sukses, kembali
+    
+    else:
+        form = UserCreationForm() # Form kosong untuk request GET
+
+    context = {'form': form}
     return render(request, 'register.html', context)
 
 def login_user(request):
@@ -112,19 +150,41 @@ def logout_user(request):
     return response
 
 def edit_product(request, id):
-    news = get_object_or_404(Product, pk=id)
-    form = ProductForm(request.POST or None, instance=news)
+    product = get_object_or_404(Product, pk=id)
+    form = ProductForm(request.POST or None, instance=product)
     if form.is_valid() and request.method == 'POST':
         form.save()
         return redirect('main:show_main')
 
     context = {
-        'form': form
+    'form': form
     }
 
-    return render(request, "edit_news.html", context)
+    return render(request, "edit_product.html", context)
 
 def delete_product(request, id):
-    news = get_object_or_404(Product, pk=id)
-    news.delete()
+    product = get_object_or_404(Product, pk=id)
+    product.delete()
     return HttpResponseRedirect(reverse('main:show_main'))
+
+@csrf_exempt
+@require_POST
+def add_product_entry_ajax(request):
+    name = strip_tags(request.POST.get("name")) # strip HTML tags!
+    description = strip_tags(request.POST.get("description")) 
+    category = request.POST.get("category")
+    thumbnail = request.POST.get("thumbnail")
+    is_featured = request.POST.get("is_featured") == 'on'  # checkbox handling
+    user = request.user
+
+    new_product = Product(
+        name=name, 
+        description=description,
+        category=category,
+        thumbnail=thumbnail,
+        is_featured=is_featured,
+        user=user
+    )
+    new_product.save()
+
+    return HttpResponse(b"CREATED", status=201)

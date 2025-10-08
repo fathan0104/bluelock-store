@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Login & Register - Bluelock Store</title>
+{% endblock meta %}
+
+{% block content %}
+<style>
+/* PENTING: Karena kamu menggunakan Tailwind, dan CSS kustom ini cukup kompleks, 
+    cara tercepat adalah menempatkan CSS ini dalam tag <style>. 
+    Jika kamu menggunakan alur build tool (misal PostCSS), kamu bisa memindahkannya ke file CSS utama
+    dan pastikan utility ini tidak bertabrakan dengan default Tailwind. 
+    Kami akan menggunakan inline style di sini sebagai solusi tercepat.
+*/
+
+/* --- CSS KUSTOM --- */
+body.auth-page {
+    background-color: #1E1E1E; /* Warna latar belakang gelap dari CSS kustom */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* KONTEN UTAMA FORMULIR */
+.container {
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    width: 768px;
+    max-width: 100%;
+    min-height: 480px;
+}
+
+/* --- BAGIAN FORMULIR LOGIN DAN SIGNUP --- */
+.form-container {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    transition: all 0.6s ease-in-out;
+}
+
+.sign-up {
+    left: 0;
+    width: 50%;
+    opacity: 0;
+    z-index: 1;
+}
+
+.sign-in {
+    left: 0;
+    width: 50%;
+    z-index: 2;
+}
+
+.form-container input:focus {
+    border: none;
+    box-shadow: 0 0 5px #00FFFF, 0 0 10px #00FFFF; /* Efek Glow Biru Neon */
+}
+
+/* --- BAGIAN PANEL GESER / TOGGLE --- */
+.toggle-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: all 0.6s ease-in-out;
+    z-index: 1000;
+    
+    /* Bentuk Melengkung/Curve */
+    border-top-left-radius: 110px;
+    border-bottom-left-radius: 110px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.toggle {
+    background: linear-gradient(to right, #0D47A1, #2979FF); /* Gradient Biru */
+    color: #fff;
+    position: relative;
+    left: -100%;
+    height: 100%;
+    width: 200%;
+    transform: translateX(0);
+    transition: all 0.6s ease-in-out;
+}
+
+.toggle-panel {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 30px;
+    text-align: center;
+    transform: translateX(0);
+    transition: all 0.6s ease-in-out;
+}
+
+.toggle-right {
+    right: 0;
+    transform: translateX(0);
+}
+
+.toggle-left {
+    transform: translateX(-200%);
+}
+
+.toggle-panel button {
+    background-color: transparent;
+    border: 2px solid #fff;
+    padding: 10px 45px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* --- EFEK ANIMASI KETIKA CLASS 'active' DITAMBAHKAN OLEH JS --- */
+
+.container.active .sign-up {
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 5;
+    animation: move 0.6s;
+}
+
+.container.active .sign-in {
+    transform: translateX(100%);
+}
+
+.container.active .toggle-container {
+    transform: translateX(-100%);
+    /* Ganti curve/border radius saat bergeser */
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-top-right-radius: 110px;
+    border-bottom-right-radius: 110px;
+}
+
+.container.active .toggle {
+    transform: translateX(50%);
+}
+
+.container.active .toggle-right {
+    transform: translateX(200%);
+}
+
+.container.active .toggle-left {
+    transform: translateX(0);
+}
+
+@keyframes move {
+    0%, 49.99% {
+        opacity: 0;
+        z-index: 1;
+    }
+    50%, 100% {
+        opacity: 1;
+        z-index: 5;
+    }
+}
+</style>
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+
+<div class="bg-gray-50 w-full min-h-screen flex items-center justify-center p-8 auth-page"> 
+    <div class="container" id="container">
+        
+        <div class="form-container sign-up">
+            <form method="POST" action="{% url 'main:register' %}" class="flex flex-col items-center justify-center p-10 h-full text-center bg-white space-y-3">
+                {% csrf_token %}
+                <h1 class="text-2xl font-bold mb-5">REGISTER</h1>
+                <span class="text-xs text-gray-500 mb-2">or use your email for registration</span>
+
+                {% for error in register_form.non_field_errors %}
+                    <div class="px-4 py-3 rounded text-sm border bg-red-50 border-red-200 text-red-700 w-full">{{ error }}</div>
+                {% endfor %}
+                {% if register_messages %}
+                    {% for message in register_messages %}
+                        <div class="px-4 py-3 rounded text-sm border {% if message.tags == 'success' %}bg-green-50 border-green-200 text-green-700{% else %}bg-red-50 border-red-200 text-red-700{% endif %} w-full">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <input type="text" placeholder="Username" name="username" required 
+                       class="w-full px-4 py-3 border-none bg-gray-100 rounded text-sm focus:shadow-none"/>
+                
+                <input type="password" placeholder="Password" name="password1" required 
+                       class="w-full px-4 py-3 border-none bg-gray-100 rounded text-sm focus:shadow-none"/>
+
+                <input type="password" placeholder="Confirm Password" name="password2" required 
+                       class="w-full px-4 py-3 border-none bg-gray-100 rounded text-sm focus:shadow-none"/>
+
+                <button type="submit" 
+                        class="bg-blue-700 text-white font-semibold py-3 px-10 border border-blue-700 rounded-lg uppercase mt-5 transition-transform hover:bg-blue-800">
+                    REGISTER
+                </button>
+            </form>
+        </div>
+
+        <div class="form-container sign-in">
+            <form method="POST" action="{% url 'main:login' %}" class="flex flex-col items-center justify-center p-10 h-full text-center bg-white space-y-3">
+                {% csrf_token %}
+                <h1 class="text-2xl font-bold mb-5">LOGIN</h1>
+                <span class="text-xs text-gray-500 mb-2">or use your email password</span>
+
+                {% for error in login_form.non_field_errors %}
+                    <div class="px-4 py-3 rounded text-sm border bg-red-50 border-red-200 text-red-700 w-full">{{ error }}</div>
+                {% endfor %}
+                {% if login_messages %}
+                    {% for message in login_messages %}
+                        <div class="px-4 py-3 rounded text-sm border {% if message.tags == 'success' %}bg-green-50 border-green-200 text-green-700{% else %}bg-red-50 border-red-200 text-red-700{% endif %} w-full">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <input type="text" placeholder="Username" name="username" required 
+                       class="w-full px-4 py-3 border-none bg-gray-100 rounded text-sm focus:shadow-none"/>
+
+                <input type="password" placeholder="Password" name="password" required 
+                       class="w-full px-4 py-3 border-none bg-gray-100 rounded text-sm focus:shadow-none"/>
+
+                <a href="#" class="text-blue-700 text-sm mt-4 mb-5 hover:underline">Forget Your Password?</a>
+                
+                <button type="submit" 
+                        class="bg-blue-700 text-white font-semibold py-3 px-10 border border-blue-700 rounded-lg uppercase mt-5 transition-transform hover:bg-blue-800">
+                    LOGIN
+                </button>
+            </form>
+        </div>
+
+        <div class="toggle-container">
+            <div class="toggle">
+                
+                <div class="toggle-panel toggle-right">
+                    <button id="register" 
+                            class="bg-transparent text-white font-semibold py-3 px-10 border-2 border-white rounded-lg uppercase transition-all duration-300 hover:bg-white hover:text-blue-700">
+                        REGISTER
+                    </button>
+                </div>
+                
+                <div class="toggle-panel toggle-left">
+                    <button id="login" 
+                            class="bg-transparent text-white font-semibold py-3 px-10 border-2 border-white rounded-lg uppercase transition-all duration-300 hover:bg-white hover:text-blue-700">
+                        LOGIN
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_script %}
+<script>
+    const container = document.getElementById('container');
+    const registerBtn = document.getElementById('register-btn'); 
+    const loginBtn = document.getElementById('login-btn');
+
+    registerBtn.addEventListener('click', () => {
+        container.classList.add("active");
+    });
+
+    loginBtn.addEventListener('click', () => {
+        container.classList.remove("active");
+    });
+
+    // Use JavaScript variables to handle Django template conditions
+    const hasRegisterErrors = `{% if register_form.errors %}true{% else %}false{% endif %}`;
+    const hasLoginErrors = `{% if login_form.errors %}true{% else %}false{% endif %}`;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (hasRegisterErrors) {
+            container.classList.add("active");
+        } else if (hasLoginErrors) {
+            container.classList.remove("active");
+        }
+    });
+
+    // Force the view to register if the URL includes 'register'
+    if (window.location.pathname.includes('register') && !container.classList.contains('active')) {
+        container.classList.add("active");
+    }
+</script>
+{% endblock extra_script %}

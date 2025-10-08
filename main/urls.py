@@ -3,13 +3,14 @@ from main.views import show_main, create_product, show_product, show_xml, show_j
 from django.contrib.auth.decorators import login_required
 from main.views import edit_product
 from main.views import delete_product
+from main.views import add_product_entry_ajax
 
 app_name = 'main'
 
 urlpatterns = [
     path('', show_main, name='show_main'),
     path('create-product/', create_product, name='create_product'),
-    path('product/<str:id>/', show_product, name='show_product'),    
+    path('product/<str:id>/', show_product, name='show_product'), 
     path('json/', show_json, name='show_json'),
     path('xml/', show_xml, name='show_xml'),
     path('xml/<int:product_id>/', show_xml_by_id, name='show_xml_by_id'),
@@ -17,6 +18,8 @@ urlpatterns = [
     path('register/', register, name='register'),
     path('login/', login_user, name='login'),
     path('logout/', logout_user, name='logout'),
-    path('product/<int:id>/edit/', edit_product, name='edit_product'),
-    path('product/<int:id>/delete/', delete_product, name='delete_product'),
+    path('product/<uuid:id>/edit/', edit_product, name='edit_product'),
+    path('product/<uuid:id>/delete/', delete_product, name='delete_product'),
+    path('create-product-ajax', add_product_entry_ajax, name='add_product_entry_ajax'),
+    
 ]
