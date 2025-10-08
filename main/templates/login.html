@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Login - Bluelock Store</title>
+{% endblock meta %}
+
+{% block content %}
+<!-- 🔥 Blue Lock Themed Login Page -->
+<div class='relative w-full min-h-screen flex items-center justify-center p-8 text-white bg-cover bg-center bg-no-repeat'
+     style='background-image: url("{% static "images/bluelock-bg.jpg" %}");'>
+
+    <!-- Overlay biru gelap biar teks jelas -->
+    <div class="absolute inset-0 bg-gradient-to-b from-[#000C1F]/80 to-[#0E141B]/90"></div>
+
+    <!-- Form container -->
+    <div class="relative max-w-md w-full z-10">
+        <div
+            class="bg-[#101820]/90 backdrop-blur-md rounded-2xl border border-[#1f2a3a] p-6 sm:p-8 shadow-[0_0_20px_rgba(0,87,255,0.15)]">
+
+            <!-- Judul -->
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-[#00C2FF] mb-2 tracking-wide drop-shadow-[0_0_10px_#0057FF]">
+                    Sign In
+                </h1>
+                <p class="text-[#B0C4DE]">
+                    Welcome back to <span class="text-[#0057FF] font-semibold">Bluelock Store</span>
+                </p>
+            </div>
+
+            <!-- Error Global -->
+            {% if form.non_field_errors %}
+            <div class="mb-6">
+                {% for error in form.non_field_errors %}
+                <div
+                    class="px-4 py-3 rounded-md text-sm border bg-[#1b0e0e] border-red-500 text-red-400 shadow-[0_0_10px_rgba(255,0,60,0.3)]">
+                    {{ error }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Error per Field -->
+            {% if form.errors %}
+            <div class="mb-6">
+                {% for field, errors in form.errors.items %}
+                {% if field != '__all__' %}
+                {% for error in errors %}
+                <div
+                    class="px-4 py-3 rounded-md text-sm border bg-[#1b0e0e] border-red-500 text-red-400 mb-2 shadow-[0_0_10px_rgba(255,0,60,0.3)]">
+                    <strong>{{ field|title }}:</strong> {{ error }}
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Form -->
+            <form method="POST" action="" class="space-y-6">
+                {% csrf_token %}
+
+                <div>
+                    <label for="username" class="block text-sm font-medium text-[#B0C4DE] mb-2">Username</label>
+                    <input id="username" name="username" type="text" required
+                        class="w-full px-4 py-3 border border-[#1f2a3a] bg-[#0E141B] text-white rounded-md focus:outline-none focus:border-[#00C2FF] focus:shadow-[0_0_10px_#0057FF] transition-all"
+                        placeholder="Enter your username">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-[#B0C4DE] mb-2">Password</label>
+                    <input id="password" name="password" type="password" required
+                        class="w-full px-4 py-3 border border-[#1f2a3a] bg-[#0E141B] text-white rounded-md focus:outline-none focus:border-[#00C2FF] focus:shadow-[0_0_10px_#0057FF] transition-all"
+                        placeholder="Enter your password">
+                </div>
+
+                <!-- Tombol Login -->
+                <button type="submit"
+                    class="w-full bg-[#0057FF] text-white font-semibold py-3 px-4 rounded-md hover:bg-[#00C2FF] hover:shadow-[0_0_20px_#00C2FF] transition-all">
+                    Sign In
+                </button>
+            </form>
+
+            <!-- Messages -->
+            {% if messages %}
+            <div class="mt-6">
+                {% for message in messages %}
+                <div class="
+          px-4 py-3 rounded-md text-sm border
+          {% if message.tags == 'success' %}
+            bg-[#11291f] border-[#00FF7F] text-[#00FF7F]
+          {% elif message.tags == 'error' %}
+            bg-[#1b0e0e] border-[#FF003C] text-[#FF6B81]
+          {% else %}
+            bg-[#101820] border-[#1f2a3a] text-[#B0C4DE]
+          {% endif %}
+          shadow-[0_0_10px_rgba(0,87,255,0.2)]
+        ">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Link ke Register -->
+            <div class="mt-6 text-center pt-6 border-t border-[#1f2a3a]">
+                <p class="text-[#B0C4DE] text-sm">
+                    Don’t have an account?
+                    <a href="{% url 'main:register' %}"
+                        class="text-[#00C2FF] hover:text-[#0057FF] font-semibold transition-colors">
+                        Register Now
+                    </a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock content %}
