@@ -3,214 +3,309 @@
 
 {% block meta %}
 <title>Product Detail - Bluelock Store</title>
+<style>
+    /* Blue Lock Theme Variables */
+    :root {
+        --bluelock-navy: #0a1128;
+        --bluelock-dark: #0f172a;
+        --bluelock-slate: #1e293b;
+        --bluelock-blue: #00d4ff;
+        --bluelock-blue-glow: #00d4ff80;
+        --bluelock-deep-blue: #1e3a8a;
+        --bluelock-text: #e2e8f0;
+        --bluelock-text-muted: #94a3b8;
+        --bluelock-card-bg: #0f1629;
+        --bluelock-border: #1e3a8a;
+    }
+
+    /* Hexagon Background */
+    .hexagon-bg {
+        background-color: var(--bluelock-navy);
+        background-image:
+            linear-gradient(30deg, #0a112808 12%, transparent 12.5%, transparent 87%, #0a112808 87.5%, #0a112808),
+            linear-gradient(150deg, #0a112808 12%, transparent 12.5%, transparent 87%, #0a112808 87.5%, #0a112808);
+        background-size: 80px 140px;
+    }
+
+    /* Gradient Overlay */
+    .gradient-overlay {
+        background: linear-gradient(180deg, rgba(10, 17, 40, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+    }
+
+    /* Back Button */
+    .back-btn {
+        color: var(--bluelock-blue);
+        transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+        color: var(--bluelock-blue);
+        text-shadow: 0 0 10px var(--bluelock-blue-glow);
+    }
+
+    /* Detail Card */
+    .detail-card {
+        background: var(--bluelock-card-bg);
+        border: 2px solid var(--bluelock-border);
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Loading Spinner */
+    .bluelock-spinner {
+        border: 4px solid var(--bluelock-border);
+        border-top: 4px solid var(--bluelock-blue);
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        box-shadow: 0 0 20px var(--bluelock-blue-glow);
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Glow Text */
+    .glow-text {
+        color: var(--bluelock-blue);
+        text-shadow: 0 0 10px var(--bluelock-blue-glow);
+    }
+
+    /* Category Badge */
+    .category-badge {
+        background: linear-gradient(135deg, #10b981, #059669);
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+
+    .featured-badge {
+        background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+    }
+
+    .hot-badge {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+    }
+
+    /* Author Card */
+    .author-card {
+        background: rgba(30, 58, 138, 0.2);
+        border: 2px solid var(--bluelock-blue);
+        box-shadow: 0 0 20px var(--bluelock-blue-glow);
+    }
+</style>
 {% endblock meta %}
 
 {% block content %}
-<div class="bg-gray-50 w-full min-h-screen">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <!-- Back Navigation -->
-        <div class="mb-6">
-            <a href="{% url 'main:show_main' %}" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
-                ← Back to Product
-            </a>
-        </div>
-        
-        <!-- Loading State -->
-        <div id="loading-state" class="bg-white rounded-lg border border-gray-200 p-12 text-center">
-            <svg class="animate-spin h-8 w-8 text-green-600 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-            </svg>
-            <p class="text-gray-600 mt-3">Loading product detail...</p>
-        </div>
+{% include 'navbar.html' %}
 
-        <!-- Error State -->
-        <div id="error-state" class="bg-white rounded-lg border border-gray-200 p-12 text-center hidden">
-            <div class="w-16 h-16 mx-auto mb-4">
-                <div class="text-red-500 text-5xl">⚠️</div>
-            </div>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">Failed to load product</h3>
-            <p class="text-gray-500">Please try again later.</p>
-        </div>
-        
-        <!-- Article Content -->
-        <article id="article-content" class="bg-white rounded-lg border border-gray-200 overflow-hidden hidden">
-            
-            <!-- Header -->
-            <div class="p-6 sm:p-8">
-                <div id="badges-container" class="flex flex-wrap items-center gap-2 mb-4">
-                    <!-- Dynamic badges will be inserted here -->
-                </div>
-                
-                <h1 id="article-title" class="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4">
-                    <!-- Title will be inserted here -->
-                </h1>
-                
-                <div class="flex flex-wrap items-center text-sm text-gray-500 gap-4">
-                    <time id="article-date">
-                        <!-- Date will be inserted here -->
-                    </time>
-                    <span id="article-views">
-                        <!-- Views will be inserted here -->
-                    </span>
-                </div>
+<div class="hexagon-bg w-full min-h-screen pt-16">
+    <div class="gradient-overlay w-full min-h-screen">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+            <!-- Back Navigation -->
+            <div class="mb-6">
+                <a href="{% url 'main:show_main' %}"
+                    class="back-btn inline-flex items-center gap-2 font-semibold transition-colors duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Back to Products
+                </a>
             </div>
 
-            <!-- Featured Image -->
-            <div id="featured-image-container" class="px-6 sm:px-8 hidden">
-                <img id="featured-image" 
-                     src="" 
-                     alt="" 
-                     class="w-full h-64 sm:h-80 lg:h-96 object-cover rounded-lg">
+            <!-- Loading State -->
+            <div id="loading-state" class="detail-card rounded-xl p-12 text-center">
+                <div class="bluelock-spinner mx-auto mb-4"></div>
+                <p class="text-gray-300 text-lg">Loading product detail...</p>
             </div>
 
-            <!-- Content -->
-            <div class="p-6 sm:p-8">
-                <div class="prose prose-lg max-w-none">
-                    <div id="article-content-text" class="text-gray-700 leading-relaxed whitespace-pre-line text-base sm:text-lg">
-                        <!-- Content will be inserted here -->
+            <!-- Error State -->
+            <div id="error-state" class="detail-card rounded-xl p-12 text-center hidden">
+                <div class="text-red-500 text-6xl mb-4">⚠️</div>
+                <h3 class="text-2xl font-bold text-red-400 mb-2">Failed to load product</h3>
+                <p class="text-gray-400">Please try again later.</p>
+            </div>
+
+            <!-- Article Content -->
+            <article id="article-content" class="detail-card rounded-xl overflow-hidden hidden">
+
+                <!-- Header -->
+                <div class="p-6 sm:p-8">
+                    <div id="badges-container" class="flex flex-wrap items-center gap-2 mb-4">
+                        <!-- Dynamic badges will be inserted here -->
+                    </div>
+
+                    <h1 id="article-title" class="text-3xl sm:text-4xl font-bold text-white leading-tight mb-4">
+                        <!-- Title will be inserted here -->
+                    </h1>
+
+                    <div class="flex flex-wrap items-center text-sm gap-4" style="color: var(--bluelock-text-muted);">
+                        <time id="article-date">
+                            <!-- Date will be inserted here -->
+                        </time>
+                        <span class="glow-text" id="article-views">
+                            <!-- Views will be inserted here -->
+                        </span>
                     </div>
                 </div>
-            </div>
 
-            <!-- Author Info -->
-            <div class="border-t border-gray-200 p-6 sm:p-8 bg-gray-50">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <div class="font-medium text-gray-900">
-                            <p id="article-author">Author: Loading...</p>
+                <!-- Featured Image -->
+                <div id="featured-image-container" class="px-6 sm:px-8 hidden">
+                    <img id="featured-image" src="" alt=""
+                        class="w-full h-64 sm:h-80 lg:h-96 object-cover rounded-lg border-2 border-blue-900">
+                </div>
+
+                <!-- Content -->
+                <div class="p-6 sm:p-8">
+                    <div class="prose prose-lg max-w-none">
+                        <div id="article-content-text" class="leading-relaxed whitespace-pre-line text-base sm:text-lg"
+                            style="color: var(--bluelock-text);">
+                            <!-- Content will be inserted here -->
                         </div>
-                        <p class="text-sm text-gray-500">Author</p>
                     </div>
                 </div>
-            </div>
-        </article>
+
+                <!-- Author Info -->
+                <div class="p-6 sm:p-8" style="border-top: 2px solid var(--bluelock-border);">
+                    <div class="author-card rounded-lg p-4">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold text-xl">
+                                <span id="author-initial">A</span>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-400 mb-1">Author</p>
+                                <p id="article-author" class="font-semibold text-white text-lg">Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
     </div>
 </div>
 
-...
 <script>
-// Configuration
-const PRODUCT_ID = "{{ product.id }}";
-const PRODUCT_DETAIL_ENDPOINT = `{% url 'main:show_json_by_id' '00000000-0000-0000-0000-000000000000' %}`.replace('00000000-0000-0000-0000-000000000000', PRODUCT_ID);
+    // Configuration
+    const PRODUCT_ID = "{{ product.id }}";
+    const PRODUCT_DETAIL_ENDPOINT = `{% url 'main:show_json_by_id' '00000000-0000-0000-0000-000000000000' %}`.replace('00000000-0000-0000-0000-000000000000', PRODUCT_ID);
 
-// DOM Elements
-const loadingState = document.getElementById('loading-state');
-const errorState = document.getElementById('error-state');
-const articleContent = document.getElementById('article-content');
-const badgesContainer = document.getElementById('badges-container');
-const articleTitle = document.getElementById('article-title');
-const articleDate = document.getElementById('article-date');
-const articleViews = document.getElementById('article-views');
-const featuredImageContainer = document.getElementById('featured-image-container');
-const featuredImage = document.getElementById('featured-image');
-const articleContentText = document.getElementById('article-content-text');
-const articleAuthor = document.getElementById('article-author');
+    // DOM Elements
+    const loadingState = document.getElementById('loading-state');
+    const errorState = document.getElementById('error-state');
+    const articleContent = document.getElementById('article-content');
+    const badgesContainer = document.getElementById('badges-container');
+    const articleTitle = document.getElementById('article-title');
+    const articleDate = document.getElementById('article-date');
+    const articleViews = document.getElementById('article-views');
+    const featuredImageContainer = document.getElementById('featured-image-container');
+    const featuredImage = document.getElementById('featured-image');
+    const articleContentText = document.getElementById('article-content-text');
+    const articleAuthor = document.getElementById('article-author');
+    const authorInitial = document.getElementById('author-initial');
 
-// Show/hide page sections
-function showState(state) {
-    loadingState.classList.toggle('hidden', state !== 'loading');
-    errorState.classList.toggle('hidden', state !== 'error');
-    articleContent.classList.toggle('hidden', state !== 'ready');
-}
-
-// Get readable category name
-function getCategoryLabel(categoryCode) {
-    const categoryMapping = {
-        transfer: 'Transfer',
-        update: 'Update',
-        exclusive: 'Exclusive',
-        match: 'Match',
-        rumor: 'Rumor',
-        analysis: 'Analysis',
-    };
-    return categoryMapping[categoryCode] || categoryCode;
-}
-
-// Render article content
-function renderArticle(product) {
-    // Set title
-    articleTitle.textContent = product.title;
-    document.title = `${product.title} - Football Product`;
-    
-    // Set badges
-    badgesContainer.innerHTML = '';
-    
-    // Category badge
-    const categoryBadge = document.createElement('span');
-    categoryBadge.className = 'inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-green-600 text-white';
-    categoryBadge.textContent = getCategoryLabel(product.category);
-    badgesContainer.appendChild(categoryBadge);
-    
-    // Featured badge
-    if (product.is_featured) {
-        const featuredBadge = document.createElement('span');
-        featuredBadge.className = 'inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-yellow-100 text-yellow-800';
-        featuredBadge.textContent = 'Featured';
-        badgesContainer.appendChild(featuredBadge);
+    // Show/hide page sections
+    function showState(state) {
+        loadingState.classList.toggle('hidden', state !== 'loading');
+        errorState.classList.toggle('hidden', state !== 'error');
+        articleContent.classList.toggle('hidden', state !== 'ready');
     }
-    
-    // Hot badge
-    if (product.product_views > 20) {
-        const hotBadge = document.createElement('span');
-        hotBadge.className = 'inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-red-100 text-red-800';
-        hotBadge.textContent = 'Hot';
-        badgesContainer.appendChild(hotBadge);
-    }
-    
-    // Set date and views
-    const formattedDate = new Date(product.created_at).toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-    articleDate.textContent = formattedDate;
-    articleViews.textContent = `${product.product_views} views`;
-    
-    // Set featured image
-    if (product.thumbnail) {
-        featuredImage.src = product.thumbnail;
-        featuredImage.alt = product.title;
-        featuredImageContainer.classList.remove('hidden');
-    } else {
-        featuredImageContainer.classList.add('hidden');
-    }
-    
-    // Set content
-    articleContentText.textContent = product.content;
-    
-    // Set author
-    const authorName = product.user_username || 'Anonymous';
-    articleAuthor.textContent = `Author: ${authorName}`;
-}
 
-// Fetch product detail
-async function loadProductDetail() {
-    try {
-        showState('loading');
-        
-        const response = await fetch(PRODUCT_DETAIL_ENDPOINT, {
-            headers: { 'Accept': 'application/json' },
-        });
+    // Get readable category name
+    function getCategoryLabel(categoryCode) {
+        const categoryMapping = {
+            ball: 'Ball',
+            shoes: 'Shoes',
+            shirt: 'Shirt',
+            sock: 'Sock',
+            bag: 'Bag',
+            jersey: 'Jersey',
+        };
+        return categoryMapping[categoryCode] || categoryCode;
+    }
 
-        if (!response.ok) {
-            throw new Error('Failed to fetch product detail');
+    // Render article content
+    function renderArticle(product) {
+        articleTitle.textContent = product.name;
+        document.title = `${product.name} - Product Detail`;
+
+        badgesContainer.innerHTML = '';
+
+        const categoryBadge = document.createElement('span');
+        categoryBadge.className = 'category-badge inline-flex items-center px-3 py-1 rounded-md text-xs font-medium text-white';
+        categoryBadge.textContent = getCategoryLabel(product.category);
+        badgesContainer.appendChild(categoryBadge);
+
+        if (product.is_featured) {
+            const featuredBadge = document.createElement('span');
+            featuredBadge.className = 'featured-badge inline-flex items-center px-3 py-1 rounded-md text-xs font-medium text-white';
+            featuredBadge.textContent = '⭐ Featured';
+            badgesContainer.appendChild(featuredBadge);
         }
 
-        const productData = await response.json();
-        renderArticle(productData);
-        showState('ready');
-    } catch (error) {
-        console.error('Error loading product detail:', error);
-        showState('error');
-    }
-}
+        if (product.product_views > 20) {
+            const hotBadge = document.createElement('span');
+            hotBadge.className = 'hot-badge inline-flex items-center px-3 py-1 rounded-md text-xs font-medium text-white';
+            hotBadge.textContent = '🔥 Hot';
+            badgesContainer.appendChild(hotBadge);
+        }
 
-// Initialize page
-loadProductDetail();
+        const formattedDate = new Date(product.created_at).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        articleDate.textContent = formattedDate;
+        articleViews.textContent = `${product.product_views} views`;
+
+        if (product.thumbnail) {
+            featuredImage.src = product.thumbnail;
+            featuredImage.alt = product.name;
+            featuredImageContainer.classList.remove('hidden');
+        } else {
+            featuredImageContainer.classList.add('hidden');
+        }
+
+        articleContentText.textContent = product.description;
+
+        const authorName = product.user_username || 'Anonymous';
+        articleAuthor.textContent = authorName;
+        authorInitial.textContent = authorName.charAt(0).toUpperCase();
+    }
+
+    // Fetch product detail
+    async function loadProductDetail() {
+        try {
+            showState('loading');
+
+            const response = await fetch(PRODUCT_DETAIL_ENDPOINT, {
+                headers: { 'Accept': 'application/json' },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch product detail');
+            }
+
+            const productData = await response.json();
+            renderArticle(productData);
+            showState('ready');
+        } catch (error) {
+            console.error('Error loading product detail:', error);
+            showState('error');
+        }
+    }
+
+    // Initialize page
+    loadProductDetail();
 </script>
-...
 {% endblock content %}

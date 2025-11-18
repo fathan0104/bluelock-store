@@ -1,97 +1,268 @@
-<nav class="fixed top-0 left-0 w-full bg-white border-b border-gray-200 shadow-sm z-50">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <div class="flex items-center">
-          <h1 class="text-xl font-semibold text-gray-900">
-            <span class="text-blue-600">Bluelock</span> Store
-          </h1>
-        </div>
-        
-        <!-- Desktop Navigation -->
-        <div class="hidden md:flex items-center space-x-8">
-          <a href="/" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
-            Home
-          </a>
-          <a href="{% url 'main:create_product' %}" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
-            Create Product
-          </a>
-        </div>
-        
-        <!-- Desktop User Section -->
-        <div class="hidden md:flex items-center space-x-6">
-          {% if user.is_authenticated %}
-            <div class="text-right">
-              <div class="text-sm font-medium text-gray-900">{{ name|default:user.username }}</div>
-              <div class="text-xs text-gray-500">{{ npm|default:"Student" }} - {{ class|default:"Class" }}</div>
+<style>
+  /* Blue Lock Theme Variables */
+  :root {
+    --bluelock-navy: #0a1128;
+    --bluelock-dark: #0f172a;
+    --bluelock-blue: #00d4ff;
+    --bluelock-blue-glow: #00d4ff80;
+    --bluelock-deep-blue: #1e3a8a;
+    --bluelock-text: #e2e8f0;
+    --bluelock-text-muted: #94a3b8;
+  }
+
+  /* Hexagon Background Pattern */
+  .hexagon-bg {
+    background-color: var(--bluelock-navy);
+    background-image: 
+      linear-gradient(30deg, #0a112810 12%, transparent 12.5%, transparent 87%, #0a112810 87.5%, #0a112810),
+      linear-gradient(150deg, #0a112810 12%, transparent 12.5%, transparent 87%, #0a112810 87.5%, #0a112810),
+      linear-gradient(30deg, #0a112810 12%, transparent 12.5%, transparent 87%, #0a112810 87.5%, #0a112810),
+      linear-gradient(150deg, #0a112810 12%, transparent 12.5%, transparent 87%, #0a112810 87.5%, #0a112810);
+    background-size: 80px 140px;
+    background-position: 0 0, 0 0, 40px 70px, 40px 70px;
+  }
+
+  /* Navbar Styles */
+  .bluelock-navbar {
+    backdrop-filter: blur(10px);
+    background: linear-gradient(to bottom, var(--bluelock-navy) 0%, rgba(10, 17, 40, 0.95) 100%);
+    border-bottom: 2px solid var(--bluelock-blue);
+    box-shadow: 0 0 20px var(--bluelock-blue-glow);
+  }
+
+  /* Logo Glow Effect */
+  .bluelock-logo {
+    color: var(--bluelock-blue);
+    text-shadow: 0 0 10px var(--bluelock-blue-glow),
+                 0 0 20px var(--bluelock-blue-glow),
+                 0 0 30px var(--bluelock-blue-glow);
+    font-weight: 800;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+  }
+
+  .bluelock-logo:hover {
+    text-shadow: 0 0 15px var(--bluelock-blue),
+                 0 0 30px var(--bluelock-blue),
+                 0 0 45px var(--bluelock-blue);
+    transform: scale(1.05);
+  }
+
+  /* Navigation Links */
+  .nav-link {
+    color: var(--bluelock-text);
+    position: relative;
+    padding: 0.5rem 0;
+    transition: all 0.3s ease;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--bluelock-blue), transparent);
+    box-shadow: 0 0 10px var(--bluelock-blue);
+    transition: width 0.3s ease;
+  }
+
+  .nav-link:hover {
+    color: var(--bluelock-blue);
+  }
+
+  .nav-link:hover::after {
+    width: 100%;
+  }
+
+  /* User Info Card */
+  .user-info-card {
+    background: transparent;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    transition: all 0.3s ease;
+  }
+
+  .user-info-card:hover {
+    background: rgba(30, 58, 138, 0.15);
+  }
+
+  /* Logout Button */
+  .logout-btn {
+    color: #ff4444;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .logout-btn:hover {
+    color: #ff6666;
+    text-shadow: 0 0 10px #ff444480;
+  }
+
+  /* Login/Register Buttons */
+  .login-btn {
+    color: var(--bluelock-text);
+    transition: all 0.3s ease;
+  }
+
+  .login-btn:hover {
+    color: var(--bluelock-blue);
+  }
+
+  .register-btn {
+    background: linear-gradient(135deg, var(--bluelock-blue), var(--bluelock-deep-blue));
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 20px var(--bluelock-blue-glow);
+    border: 1px solid var(--bluelock-blue);
+  }
+
+  .register-btn:hover {
+    box-shadow: 0 0 30px var(--bluelock-blue);
+    transform: translateY(-2px);
+  }
+
+  /* Mobile Menu Button */
+  .mobile-menu-btn {
+    color: var(--bluelock-blue);
+  }
+
+  .mobile-menu-btn span {
+    background: var(--bluelock-blue);
+    box-shadow: 0 0 5px var(--bluelock-blue-glow);
+  }
+
+  /* Mobile Menu */
+  .mobile-menu-container {
+    background: linear-gradient(to bottom, var(--bluelock-navy), var(--bluelock-dark));
+    border-top: 2px solid var(--bluelock-blue);
+  }
+
+  /* Lightning Effect Animation */
+  @keyframes lightning {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+  }
+
+  .lightning-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--bluelock-blue), transparent);
+    animation: lightning 2s infinite;
+    pointer-events: none;
+  }
+</style>
+
+<nav class="bluelock-navbar fixed top-0 left-0 w-full z-50 hexagon-bg">
+  <div class="lightning-effect"></div>
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <div class="flex items-center">
+        <h1 class="text-2xl bluelock-logo">
+          BLUELOCK <span class="text-white">STORE</span>
+        </h1>
+      </div>
+      
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex items-center space-x-8">
+        <a href="/" class="nav-link font-medium">
+          Home
+        </a>
+        <a href="{% url 'main:create_product' %}" class="nav-link font-medium">
+          Create Product
+        </a>
+      </div>
+      
+      <!-- Desktop User Section -->
+      <div class="hidden md:flex items-center space-x-6">
+        {% if user.is_authenticated %}
+          <div class="user-info-card flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold border-2 border-blue-400" style="box-shadow: 0 0 15px var(--bluelock-blue-glow);">
+              {{ name|default:user.username|first|upper }}
             </div>
-            <a href="{% url 'main:logout' %}" class="text-red-600 hover:text-red-700 font-medium transition-colors">
-              Logout
-            </a>
-          {% else %}
-            <a href="{% url 'main:login' %}" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+            <div>
+              <div class="text-sm font-medium" style="color: var(--bluelock-blue);">{{ name|default:user.username }}</div>
+              <div class="text-xs" style="color: var(--bluelock-text-muted);">{{ npm|default:"Student" }}</div>
+            </div>
+          </div>
+          <a href="{% url 'main:logout' %}" class="logout-btn font-medium">
+            Logout
+          </a>
+        {% else %}
+          <a href="{% url 'main:login' %}" class="login-btn font-medium">
+            Login
+          </a>
+          <a href="{% url 'main:register' %}" class="register-btn">
+            Register
+          </a>
+        {% endif %}
+      </div>
+      
+      <!-- Mobile Menu Button -->
+      <div class="md:hidden flex items-center">
+        <button class="mobile-menu-button mobile-menu-btn p-2 transition-colors">
+          <span class="sr-only">Open menu</span>
+          <div class="w-6 h-6 flex flex-col justify-center items-center">
+            <span class="block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm"></span>
+            <span class="block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm my-0.5"></span>
+            <span class="block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm"></span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu mobile-menu-container hidden md:hidden">
+    <div class="px-6 py-4 space-y-4">
+      <!-- Mobile Navigation Links -->
+      <div class="space-y-1">
+        <a href="/" class="nav-link block font-medium py-3">
+          Home
+        </a>
+        <a href="{% url 'main:create_product' %}" class="nav-link block font-medium py-3">
+          Create Product
+        </a>
+      </div>
+      
+      <!-- Mobile User Section -->
+      <div class="border-t pt-4" style="border-color: var(--bluelock-blue);">
+        {% if user.is_authenticated %}
+          <div class="user-info-card mb-4">
+            <div class="font-medium" style="color: var(--bluelock-blue);">{{ name|default:user.username }}</div>
+            <div class="text-sm" style="color: var(--bluelock-text-muted);">{{ npm|default:"Student" }} - {{ class|default:"Class" }}</div>
+          </div>
+          <a href="{% url 'main:logout' %}" class="logout-btn block font-medium py-3">
+            Logout
+          </a>
+        {% else %}
+          <div class="space-y-3">
+            <a href="{% url 'main:login' %}" class="login-btn block font-medium py-3">
               Login
             </a>
-            <a href="{% url 'main:register' %}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-medium transition-colors">
+            <a href="{% url 'main:register' %}" class="register-btn block text-center">
               Register
             </a>
-          {% endif %}
-        </div>
-        
-        <!-- Mobile Menu Button -->
-        <div class="md:hidden flex items-center">
-          <button class="mobile-menu-button p-2 text-gray-600 hover:text-gray-900 transition-colors">
-            <span class="sr-only">Open menu</span>
-            <div class="w-6 h-6 flex flex-col justify-center items-center">
-              <span class="bg-current block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm"></span>
-              <span class="bg-current block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm my-0.5"></span>
-              <span class="bg-current block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm"></span>
-            </div>
-          </button>
-        </div>
+          </div>
+        {% endif %}
       </div>
     </div>
-    <!-- Mobile Menu -->
-    <div class="mobile-menu hidden md:hidden bg-white border-t border-gray-200">
-      <div class="px-6 py-4 space-y-4">
-        <!-- Mobile Navigation Links -->
-        <div class="space-y-1">
-          <a href="/" class="block text-gray-600 hover:text-gray-900 font-medium py-3 transition-colors">
-            Home
-          </a>
-          <a href="{% url 'main:create_product' %}" class="block text-gray-600 hover:text-gray-900 font-medium py-3 transition-colors">
-            Create Product
-          </a>
-        </div>
-        
-        <!-- Mobile User Section -->
-        <div class="border-t border-gray-200 pt-4">
-          {% if user.is_authenticated %}
-            <div class="mb-4">
-              <div class="font-medium text-gray-900">{{ name|default:user.username }}</div>
-              <div class="text-sm text-gray-500">{{ npm|default:"Student" }} - {{ class|default:"Class" }}</div>
-            </div>
-            <a href="{% url 'main:logout' %}" class="block text-red-600 hover:text-red-700 font-medium py-3 transition-colors">
-              Logout
-            </a>
-          {% else %}
-            <div class="space-y-3">
-              <a href="{% url 'main:login' %}" class="block text-gray-600 hover:text-gray-900 font-medium py-3 transition-colors">
-                Login
-              </a>
-              <a href="{% url 'main:register' %}" class="block bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded text-center transition-colors">
-                Register
-              </a>
-            </div>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-    <script>
-      const btn = document.querySelector("button.mobile-menu-button");
-      const menu = document.querySelector(".mobile-menu");
-    
-      btn.addEventListener("click", () => {
-        menu.classList.toggle("hidden");
-      });
-    </script>
-  </nav>
+  </div>
+
+  <script>
+    const btn = document.querySelector("button.mobile-menu-button");
+    const menu = document.querySelector(".mobile-menu");
+  
+    btn.addEventListener("click", () => {
+      menu.classList.toggle("hidden");
+    });
+  </script>
+</nav>

@@ -1,22 +1,265 @@
 {% extends 'base.html' %}
-
 {% load static %}
 
+{% block meta %}
+<title>Edit Product - Bluelock Store</title>
+<style>
+    /* Blue Lock Theme */
+    :root {
+        --bluelock-navy: #0a1128;
+        --bluelock-dark: #0f172a;
+        --bluelock-blue: #00d4ff;
+        --bluelock-blue-glow: #00d4ff80;
+        --bluelock-deep-blue: #1e3a8a;
+        --bluelock-text: #e2e8f0;
+        --bluelock-text-muted: #94a3b8;
+        --bluelock-card-bg: #0f1629;
+        --bluelock-border: #1e3a8a;
+    }
+
+    /* Hexagon Background */
+    .hexagon-bg {
+        background-color: var(--bluelock-navy);
+        background-image: 
+            linear-gradient(30deg, #0a112808 12%, transparent 12.5%, transparent 87%, #0a112808 87.5%, #0a112808),
+            linear-gradient(150deg, #0a112808 12%, transparent 12.5%, transparent 87%, #0a112808 87.5%, #0a112808);
+        background-size: 80px 140px;
+    }
+
+    .gradient-overlay {
+        background: linear-gradient(180deg, rgba(10, 17, 40, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+    }
+
+    /* Form Container */
+    .form-container {
+        background: var(--bluelock-card-bg);
+        border: 2px solid var(--bluelock-border);
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Form Input */
+    .bluelock-input, .bluelock-textarea, .bluelock-select {
+        background: var(--bluelock-navy);
+        border: 2px solid var(--bluelock-border);
+        color: var(--bluelock-text);
+        transition: all 0.3s ease;
+    }
+
+    .bluelock-input:focus, .bluelock-textarea:focus, .bluelock-select:focus {
+        outline: none;
+        border-color: var(--bluelock-blue);
+        box-shadow: 0 0 15px var(--bluelock-blue-glow);
+    }
+
+    /* Label */
+    .form-label {
+        color: var(--bluelock-text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+    }
+
+    /* Title Glow */
+    .glow-title {
+        color: var(--bluelock-blue);
+        text-shadow: 0 0 10px var(--bluelock-blue-glow),
+                     0 0 20px var(--bluelock-blue-glow);
+    }
+
+    /* Back Button */
+    .back-btn {
+        color: var(--bluelock-blue);
+        transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+        text-shadow: 0 0 10px var(--bluelock-blue-glow);
+    }
+
+    /* Submit Button */
+    .btn-submit {
+        background: linear-gradient(135deg, var(--bluelock-blue), var(--bluelock-deep-blue));
+        border: 2px solid var(--bluelock-blue);
+        color: white;
+        box-shadow: 0 0 20px var(--bluelock-blue-glow);
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+
+    .btn-submit:hover {
+        box-shadow: 0 0 30px var(--bluelock-blue), 0 0 40px var(--bluelock-blue-glow);
+        transform: translateY(-2px);
+    }
+
+    /* Cancel Button */
+    .btn-cancel {
+        background: var(--bluelock-card-bg);
+        border: 2px solid var(--bluelock-border);
+        color: var(--bluelock-text);
+        transition: all 0.3s ease;
+    }
+
+    .btn-cancel:hover {
+        border-color: var(--bluelock-blue);
+        color: var(--bluelock-blue);
+        box-shadow: 0 0 15px var(--bluelock-blue-glow);
+    }
+
+    /* Checkbox */
+    .bluelock-checkbox {
+        background: var(--bluelock-navy);
+        border: 2px solid var(--bluelock-border);
+        width: 20px;
+        height: 20px;
+    }
+
+    .bluelock-checkbox:checked {
+        background: linear-gradient(135deg, var(--bluelock-blue), var(--bluelock-deep-blue));
+        border-color: var(--bluelock-blue);
+    }
+
+    /* Django Form Styling */
+    table {
+        width: 100%;
+    }
+
+    table tr {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    table th {
+        text-align: left;
+        padding: 0;
+        font-weight: 600;
+        color: var(--bluelock-text-muted);
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+    }
+
+    table td {
+        padding: 0;
+    }
+
+    table input[type="text"],
+    table input[type="number"],
+    table input[type="url"],
+    table textarea,
+    table select {
+        width: 100%;
+        background: var(--bluelock-navy);
+        border: 2px solid var(--bluelock-border);
+        color: var(--bluelock-text);
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    table input:focus,
+    table textarea:focus,
+    table select:focus {
+        outline: none;
+        border-color: var(--bluelock-blue);
+        box-shadow: 0 0 15px var(--bluelock-blue-glow);
+    }
+
+    table textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    table select {
+        cursor: pointer;
+    }
+
+    table select option {
+        background: var(--bluelock-navy);
+        color: var(--bluelock-text);
+    }
+
+    /* Helptext */
+    .helptext {
+        font-size: 0.75rem;
+        color: var(--bluelock-text-muted);
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    /* Error Messages */
+    .errorlist {
+        list-style: none;
+        padding: 0;
+        margin: 0.5rem 0 0 0;
+    }
+
+    .errorlist li {
+        color: #ef4444;
+        font-size: 0.875rem;
+        padding: 0.5rem;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid #ef4444;
+        border-radius: 0.375rem;
+        margin-top: 0.25rem;
+    }
+</style>
+{% endblock meta %}
+
 {% block content %}
+{% include 'navbar.html' %}
 
-<h1>Edit Product</h1>
+<div class="hexagon-bg w-full min-h-screen pt-16">
+    <div class="gradient-overlay w-full min-h-screen">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <!-- Back Button -->
+            <div class="mb-6">
+                <a href="{% url 'main:show_main' %}"
+                    class="back-btn inline-flex items-center gap-2 font-semibold transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Back to Products
+                </a>
+            </div>
 
-<form method="POST">
-    {% csrf_token %}
-    <table>
-        {{ form.as_table }}
-        <tr>
-            <td></td>
-            <td>
-                <input type="submit" value="Edit Product"/>
-            </td>
-        </tr>
-    </table>
-</form>
+            <!-- Form Container -->
+            <div class="form-container rounded-xl overflow-hidden">
+                
+                <!-- Header -->
+                <div class="p-6 sm:p-8 border-b-2" style="border-color: var(--bluelock-border); background: rgba(30, 58, 138, 0.2);">
+                    <h1 class="glow-title text-3xl font-bold mb-2">⚡ EDIT PRODUCT</h1>
+                    <p class="text-gray-400">Update your product information</p>
+                </div>
+
+                <!-- Form -->
+                <div class="p-6 sm:p-8">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <table>
+                            {{ form.as_table }}
+                        </table>
+
+                        <!-- Action Buttons -->
+                        <div class="flex flex-col sm:flex-row gap-3 mt-6 pt-6 border-t-2" style="border-color: var(--bluelock-border);">
+                            <a href="{% url 'main:show_main' %}" 
+                               class="btn-cancel px-6 py-3 rounded-lg font-medium text-center">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn-submit flex-1 px-6 py-3 rounded-lg">
+                                💾 Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 {% endblock %}

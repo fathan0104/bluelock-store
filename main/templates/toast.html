@@ -1,14 +1,51 @@
 {% load static %}
+<style>
+    .toast-container {
+        background: linear-gradient(135deg, #0f1629, #0a1128);
+        border: 2px solid #00d4ff;
+        box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+    }
+
+    .toast-success {
+        border-color: #10b981;
+        box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+    }
+
+    .toast-error {
+        border-color: #ef4444;
+        box-shadow: 0 0 30px rgba(239, 68, 68, 0.5);
+    }
+
+    .toast-warning {
+        border-color: #fbbf24;
+        box-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
+    }
+
+    .toast-info {
+        border-color: #00d4ff;
+        box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+    }
+
+    .toast-title {
+        color: #e2e8f0;
+        text-shadow: 0 0 5px rgba(226, 232, 240, 0.3);
+    }
+
+    .toast-message {
+        color: #94a3b8;
+    }
+</style>
+
 <div 
-    class="fixed bottom-8 right-8 p-4 px-8 rounded-xl shadow-xl z-50 opacity-0 transition-all duration-300 translate-y-64 flex items-center gap-4"
+    class="toast-container fixed bottom-8 right-8 p-4 px-6 rounded-xl shadow-xl z-50 opacity-0 transition-all duration-300 translate-y-64 flex items-center gap-4 max-w-md"
     id="toast-component"
 >
-    <span id="toast-icon" class="text-2xl"></span>
-    <div>
-        <h3 class="font-bold" id="toast-title">
+    <span id="toast-icon" class="text-3xl"></span>
+    <div class="flex-1">
+        <h3 class="toast-title font-bold text-lg" id="toast-title">
             This is a Sample Title
         </h3>
-        <p class="text-gray-700 text-sm line-clamp-3" id="toast-message">
+        <p class="toast-message text-sm line-clamp-2" id="toast-message">
             This is a Sample Message
         </p>
     </div>

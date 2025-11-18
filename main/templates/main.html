@@ -3,71 +3,246 @@
 
 {% block meta %}
 <title>Bluelock Store</title>
+<style>
+    /* Blue Lock Theme Variables */
+    :root {
+        --bluelock-navy: #0a1128;
+        --bluelock-dark: #0f172a;
+        --bluelock-slate: #1e293b;
+        --bluelock-blue: #00d4ff;
+        --bluelock-blue-glow: #00d4ff80;
+        --bluelock-deep-blue: #1e3a8a;
+        --bluelock-text: #e2e8f0;
+        --bluelock-text-muted: #94a3b8;
+        --bluelock-card-bg: #0f1629;
+        --bluelock-border: #1e3a8a;
+    }
+
+    /* Hexagon Background Pattern */
+    .hexagon-bg {
+        background-color: var(--bluelock-navy);
+        background-image: 
+            linear-gradient(30deg, #0a112808 12%, transparent 12.5%, transparent 87%, #0a112808 87.5%, #0a112808),
+            linear-gradient(150deg, #0a112808 12%, transparent 12.5%, transparent 87%, #0a112808 87.5%, #0a112808),
+            linear-gradient(30deg, #0a112808 12%, transparent 12.5%, transparent 87%, #0a112808 87.5%, #0a112808),
+            linear-gradient(150deg, #0a112808 12%, transparent 12.5%, transparent 87%, #0a112808 87.5%, #0a112808);
+        background-size: 80px 140px;
+        background-position: 0 0, 0 0, 40px 70px, 40px 70px;
+    }
+
+    /* Gradient Overlay */
+    .gradient-overlay {
+        background: linear-gradient(180deg, rgba(10, 17, 40, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+    }
+
+    /* Glow Text Effect */
+    .glow-text {
+        color: var(--bluelock-blue);
+        text-shadow: 0 0 10px var(--bluelock-blue-glow),
+                     0 0 20px var(--bluelock-blue-glow),
+                     0 0 30px var(--bluelock-blue-glow);
+    }
+
+    .glow-text-white {
+        color: var(--bluelock-text);
+        text-shadow: 0 0 5px rgba(226, 232, 240, 0.3);
+    }
+
+    /* Blue Lock Button */
+    .bluelock-btn {
+        background: linear-gradient(135deg, var(--bluelock-blue), var(--bluelock-deep-blue));
+        color: white;
+        border: 2px solid var(--bluelock-blue);
+        box-shadow: 0 0 20px var(--bluelock-blue-glow);
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+
+    .bluelock-btn:hover {
+        box-shadow: 0 0 30px var(--bluelock-blue), 0 0 40px var(--bluelock-blue-glow);
+        transform: translateY(-2px);
+        border-color: var(--bluelock-blue);
+    }
+
+    /* Filter Button Active */
+    .filter-btn-active {
+        background: linear-gradient(135deg, var(--bluelock-blue), var(--bluelock-deep-blue));
+        color: white;
+        border: 2px solid var(--bluelock-blue);
+        box-shadow: 0 0 20px var(--bluelock-blue-glow);
+    }
+
+    .filter-btn-inactive {
+        background: var(--bluelock-card-bg);
+        color: var(--bluelock-text);
+        border: 2px solid var(--bluelock-border);
+    }
+
+    .filter-btn-inactive:hover {
+        border-color: var(--bluelock-blue);
+        color: var(--bluelock-blue);
+        box-shadow: 0 0 15px var(--bluelock-blue-glow);
+    }
+
+    /* Product Card */
+    .product-card {
+        background: var(--bluelock-card-bg);
+        border: 2px solid var(--bluelock-border);
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    .product-card:hover {
+        border-color: var(--bluelock-blue);
+        box-shadow: 0 0 30px var(--bluelock-blue-glow);
+        transform: translateY(-5px);
+    }
+
+    /* Category Badge */
+    .category-badge {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        font-weight: 600;
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+
+    /* Featured Badge */
+    .featured-badge {
+        background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        color: white;
+        font-weight: 600;
+        box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+    }
+
+    /* Hot Badge */
+    .hot-badge {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+        font-weight: 600;
+        box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+    }
+
+    /* Loading Spinner */
+    .bluelock-spinner {
+        border: 4px solid var(--bluelock-border);
+        border-top: 4px solid var(--bluelock-blue);
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        box-shadow: 0 0 20px var(--bluelock-blue-glow);
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Filter Container */
+    .filter-container {
+        background: var(--bluelock-card-bg);
+        border: 2px solid var(--bluelock-border);
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Link Styles */
+    .text-link {
+        color: var(--bluelock-blue);
+        transition: all 0.3s ease;
+    }
+
+    .text-link:hover {
+        color: var(--bluelock-blue);
+        text-shadow: 0 0 10px var(--bluelock-blue-glow);
+    }
+
+    /* Lightning Border Animation */
+    @keyframes lightning-border {
+        0%, 100% { 
+            box-shadow: 0 0 20px var(--bluelock-blue-glow);
+        }
+        50% { 
+            box-shadow: 0 0 30px var(--bluelock-blue), 0 0 40px var(--bluelock-blue-glow);
+        }
+    }
+
+    .lightning-border {
+        animation: lightning-border 2s infinite;
+    }
+
+    /* Empty State */
+    .empty-state-card {
+        background: var(--bluelock-card-bg);
+        border: 2px solid var(--bluelock-border);
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+</style>
 {% endblock meta %}
 
 {% block content %}
 {% include 'navbar.html' %}
-<div class="bg-gray-50 w-full pt-16 min-h-screen">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Header Section -->
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Latest Product</h1>
-            <p class="text-gray-600">Stay update with new product from Bluelock Store</p>
-        </div>
-        <!-- Button to open modal -->
-        <button onclick="showModal()"
-            class="inline-flex items-center px-4 py-2 bg-white text-green-600 font-semibold outline outline-2 outline-green-600 outline-offset-[-2px] rounded-md hover:bg-green-600 hover:text-white transition-colors mb-4">
-            Create Product by AJAX
-        </button>
-        <!-- Filter Section -->
-        <div
-            class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 bg-white rounded-lg border border-gray-200 p-4">
-            <div class="flex space-x-3 mb-4 sm:mb-0">
-                <a id="filter-all"
-                    class="bg-green-600 text-white px-4 py-2 rounded-md font-medium transition-colors hover:bg-green-700">
-                    All Product
-                </a>
-                <a id="filter-my"
-                    class="bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-md font-medium transition-colors hover:bg-green-600 hover:text-white">
-                    My Product
+<div class="hexagon-bg w-full pt-16 min-h-screen">
+    <div class="gradient-overlay w-full min-h-screen">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Header Section -->
+            <div class="mb-8">
+                <h1 class="text-4xl font-bold glow-text mb-2">LATEST PRODUCT</h1>
+                <p class="text-lg glow-text-white">Stay update with new product from Bluelock Store</p>
+            </div>
+
+            <!-- Create Product Button -->
+            <button onclick="showModal()"
+                class="bluelock-btn inline-flex items-center px-6 py-3 rounded-lg mb-6 lightning-border">
+                ⚡ Create Product by AJAX
+            </button>
+
+            <!-- Filter Section -->
+            <div class="filter-container flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 rounded-lg p-4">
+                <div class="flex space-x-3 mb-4 sm:mb-0">
+                    <button id="filter-all"
+                        class="filter-btn-active px-6 py-3 rounded-lg font-medium transition-all">
+                        All Product
+                    </button>
+                    <button id="filter-my"
+                        class="filter-btn-inactive px-6 py-3 rounded-lg font-medium transition-all">
+                        My Product
+                    </button>
+                </div>
+                {% if user.is_authenticated %}
+                <div class="text-sm glow-text-white">Last login: <span class="glow-text">{{ last_login }}</span></div>
+                {% endif %}
+            </div>
+
+            <!-- Loading State -->
+            <div id="loading" class="empty-state-card rounded-lg p-12 text-center hidden">
+                <div class="bluelock-spinner mx-auto mb-4"></div>
+                <p class="glow-text-white text-lg">Loading product...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="error" class="hidden"></div>
+
+            <!-- Product Grid -->
+            <div id="grid" class="hidden"></div>
+
+            <!-- Empty State -->
+            <div id="empty" class="empty-state-card rounded-lg p-12 text-center hidden">
+                <div class="w-60 h-60 mx-auto mb-4">
+                    <img src="{% static 'image/no-product.png' %}" alt="No product available"
+                        class="w-full h-full object-contain opacity-50">
+                </div>
+                <h3 class="text-2xl font-bold glow-text mb-2">No product found</h3>
+                <p class="glow-text-white text-lg mb-6">Be the first to share football product with the community.</p>
+                <a href="{% url 'main:create_product' %}"
+                    class="bluelock-btn inline-flex items-center px-6 py-3 rounded-lg">
+                    Create Product
                 </a>
             </div>
-            {% if user.is_authenticated %}
-            <div class="text-sm text-gray-500">Last login: {{ last_login }}</div>
-            {% endif %}
-        </div>
-
-        <!-- Loading State -->
-        <div id="loading" class="bg-white rounded-lg border border-gray-200 p-12 text-center hidden">
-            <svg class="animate-spin h-8 w-8 text-green-600 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none"
-                viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-            </svg>
-            <p class="text-gray-600 mt-3">Loading product...</p>
-        </div>
-
-        <!-- Error State -->
-        <div id="error" class="hidden"></div>
-
-        <!-- Product Grid -->
-        <div id="grid" class="hidden"></div>
-
-        <!-- Empty State -->
-        <div id="empty" class="bg-white rounded-lg border border-gray-200 p-12 text-center hidden">
-            <div class="w-32 h-32 mx-auto mb-4">
-                <img src="{% static 'image/no-product.png' %}" alt="No product available"
-                    class="w-full h-full object-contain">
-            </div>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">No product found</h3>
-            <p class="text-gray-500 mb-6">Be the first to share football product with the community.</p>
-            <a href="{% url 'main:create_product' %}"
-                class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
-                Create Product
-            </a>
         </div>
     </div>
 </div>
+
+{% include 'modal.html' %}
 
 <script>
     // Configuration
@@ -91,11 +266,11 @@
         if (!showAllProductButton || !showMyProductButton) return;
 
         if (activeFilter === 'all') {
-            showAllProductButton.className = 'bg-green-600 text-white px-4 py-2 rounded-md font-medium transition-colors hover:bg-green-700';
-            showMyProductButton.className = 'bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-md font-medium transition-colors hover:bg-green-600 hover:text-white';
+            showAllProductButton.className = 'filter-btn-active px-6 py-3 rounded-lg font-medium transition-all';
+            showMyProductButton.className = 'filter-btn-inactive px-6 py-3 rounded-lg font-medium transition-all';
         } else {
-            showMyProductButton.className = 'bg-green-600 text-white px-4 py-2 rounded-md font-medium transition-colors hover:bg-green-700';
-            showAllProductButton.className = 'bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-md font-medium transition-colors hover:bg-green-600 hover:text-white';
+            showMyProductButton.className = 'filter-btn-active px-6 py-3 rounded-lg font-medium transition-all';
+            showAllProductButton.className = 'filter-btn-inactive px-6 py-3 rounded-lg font-medium transition-all';
         }
     }
 
@@ -106,7 +281,6 @@
         emptyStateDisplay.classList.toggle('hidden', !showEmpty);
         productGridContainer.classList.toggle('hidden', !showGrid);
 
-        // Add grid classes when showing grid
         if (showGrid) {
             productGridContainer.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
         }
@@ -116,10 +290,10 @@
     function getReadableCategoryName(categoryCode) {
         const categoryMapping = {
             ball: 'Ball',
-            sport_shoes: 'SportShoes',
+            shoes: 'Shoes',
             shirt: 'Shirt',
             sock: 'Sock',
-            shoes: 'Shoes',
+            bag: 'Bag',
             jersey: 'Jersey',
         };
         return categoryMapping[categoryCode] || categoryCode;
@@ -128,13 +302,13 @@
     // Create product card element
     function buildProductCardElement(item) {
         const article = document.createElement('article');
-        article.className = 'bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-shadow duration-300 overflow-hidden flex flex-col h-full';
+        article.className = 'product-card rounded-lg flex flex-col h-full';
 
-        const linkDetail = `{% url 'main:show_product' '00000000-0000-0000-0000-000000000000' %}`.replace('00000000-0000-0000-0000-000000000000', item.id);
-        const linkEdit = `{% url 'main:edit_product' '00000000-0000-0000-0000-000000000000' %}`.replace('00000000-0000-0000-0000-000000000000', item.id);
-        const linkDelete = `{% url 'main:delete_product' '00000000-0000-0000-0000-000000000000' %}`.replace('00000000-0000-0000-0000-000000000000', item.id);
+        const linkDetail = `/product/${item.id}/`;
+        const linkEdit = `/product/edit/${item.id}/`;
+        const linkDelete = `/product/delete/${item.id}/`;
 
-        const title = DOMPurify.sanitize(item.title);
+        const name = DOMPurify.sanitize(item.name);
         const description = DOMPurify.sanitize(item.description);
         const category = DOMPurify.sanitize(item.category);
         const thumbnail = DOMPurify.sanitize(item.thumbnail);
@@ -147,47 +321,48 @@
         const isFeatured = item.is_featured;
         const isHot = productViews > 20;
 
-        const thumbnailHtml = DOMPurify.sanitize(
-            item.thumbnail ? `<img src='${thumbnail}' alt='${title}' class='w-full h-full object-cover'>` : `<div class='w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center'></div>`
-        );
-        const categoryLabel = DOMPurify.sanitize(getReadableCategoryName(category));
-        const featuredLabel = isFeatured ? DOMPurify.sanitize(`<span class='inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-yellow-100 text-yellow-800'>Featured</span>`) : '';
-        const hotLabel = isHot ? DOMPurify.sanitize(`<span class='inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800'>Hot</span>`) : '';
+        const thumbnailHtml = item.thumbnail
+            ? `<img src='${thumbnail}' alt='${name}' class='w-full h-full object-cover'>`
+            : `<div class='w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center'><span class='text-gray-500'>No image</span></div>`;
+
+        const categoryLabel = getReadableCategoryName(category);
+        const featuredLabel = isFeatured ? `<span class='featured-badge inline-flex items-center px-2 py-1 rounded text-xs'>⭐ Featured</span>` : '';
+        const hotLabel = isHot ? `<span class='hot-badge inline-flex items-center px-2 py-1 rounded text-xs'>🔥 Hot</span>` : '';
 
         const editDeleteHtml = CURRENT_USER_ID && Number(CURRENT_USER_ID) === Number(item.user_id)
             ? `<div class='flex space-x-2'>
-            <a href='${linkEdit}' class='text-gray-600 hover:text-gray-700 text-sm transition-colors'>Edit</a>
-            <a href='${linkDelete}' class='text-red-600 hover:text-red-700 text-sm transition-colors' onclick='return confirm("Are you sure you want to delete this article?")'>Delete</a>
-          </div>`
+                <a href='${linkEdit}' class='text-link text-sm font-medium'>Edit</a>
+                <a href='${linkDelete}' class='text-red-500 hover:text-red-400 text-sm font-medium transition-colors' onclick='return confirm("Are you sure you want to delete this product?")'>Delete</a>
+              </div>`
             : '';
 
         const cardHtml = `
-        <div class="aspect-[16/9] relative overflow-hidden">
-          ${thumbnailHtml}
-          <div class="absolute top-3 left-3">
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-green-600 text-white">${categoryLabel}</span>
-          </div>
-          <div class="absolute top-3 right-3 flex space-x-2">
-            ${featuredLabel}
-            ${hotLabel}
-          </div>
-        </div>
-        <div class="p-5 flex flex-col flex-1">
-          <div class="flex items-center text-sm text-gray-500 mb-3">
-            <time>${createdAt}</time>
-            <span class="mx-2">•</span>
-            <span>${productViews} views</span>
-          </div>
-          <h3 class="text-lg font-semibold text-gray-900 mb-3 line-clamp-2 leading-tight">
-            <a href="${linkDetail}" class="hover:text-green-600 transition-colors">${title}</a>
-          </h3>
-          <p class="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-4">${description}</p>
-          <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
-            <a href="${linkDetail}" class="text-green-600 hover:text-green-700 font-medium text-sm transition-colors">Read more</a>
-            ${editDeleteHtml}
-          </div>
-        </div>
-    `;
+            <div class="aspect-[16/9] relative overflow-hidden">
+                ${thumbnailHtml}
+                <div class="absolute top-3 left-3">
+                    <span class="category-badge inline-flex items-center px-3 py-1 rounded-md text-xs">${categoryLabel}</span>
+                </div>
+                <div class="absolute top-3 right-3 flex flex-col space-y-2">
+                    ${featuredLabel}
+                    ${hotLabel}
+                </div>
+            </div>
+            <div class="p-5 flex flex-col flex-1">
+                <div class="flex items-center text-sm mb-3" style="color: var(--bluelock-text-muted);">
+                    <time>${createdAt}</time>
+                    <span class="mx-2">•</span>
+                    <span class="glow-text">${productViews} views</span>
+                </div>
+                <h3 class="text-lg font-semibold mb-3 line-clamp-2 leading-tight" style="color: var(--bluelock-text);">
+                    <a href="${linkDetail}" class="hover:text-link transition-colors">${name}</a>
+                </h3>
+                <p class="text-sm leading-relaxed line-clamp-3 mb-4" style="color: var(--bluelock-text-muted);">${description}</p>
+                <div class="pt-4 mt-auto border-t flex items-center justify-between" style="border-color: var(--bluelock-border);">
+                    <a href="${linkDetail}" class="text-link font-medium text-sm">Read more →</a>
+                    ${editDeleteHtml}
+                </div>
+            </div>
+        `;
 
         article.innerHTML = cardHtml;
         return article;
@@ -232,7 +407,7 @@
             }
 
             const productData = await response.json();
-            allproductData = productData || [];
+            allProductData = productData || [];
 
             filterAndDisplayProduct();
         } catch (error) {
@@ -261,10 +436,12 @@
     }
 
     // Start application
-    initializeProductPage();
-    document.addEventListener('productAdded', function () {
-        // Refresh data without page reload
-        fetchProductFromServer();
+    document.addEventListener('DOMContentLoaded', function () {
+        initializeProductPage();
+        document.addEventListener('productAdded', function () {
+            console.log('🎉 Product added! Refreshing list...');
+            fetchProductFromServer();
+        });
     });
 </script>
 
